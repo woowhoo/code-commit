@@ -210,13 +210,31 @@ Resources:
     DependsOn:
       - InstanceSecurityGroup
 
+  Repository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: guess
+
   # IAM users
   DevUser:
     Type: AWS::IAM::User
     Properties: 
       UserName: dev
+      LoginProfile:
+        Password: asdf1234
+        PasswordResetRequired: False
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly
 
   AdminUser:
     Type: AWS::IAM::User
     Properties: 
       UserName: lead
+      LoginProfile:
+        Password: asdf1234
+        PasswordResetRequired: False
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess

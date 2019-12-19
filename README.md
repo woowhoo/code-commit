@@ -10,6 +10,8 @@
 
 ## Repository에 연결
 
+### HTTPS
+
 1. CloudFormation으로 생성된 IAM user로 AWS Management Console 로그인
 
     ```text
@@ -26,6 +28,13 @@
 5. Systems Manager Dashboard 왼쪽 패널 Instances & Nodes 섹션 아래에 있는 **[Session Manager]** 선택
 
 6. **[Start Session]** &rightarrow; Instance Name: **lead** 선택 &rightarrow; **[Start Session]** 클릭
+
+    - Home Directory로 이동
+
+        ```bash
+        cd
+        ```
+
     - Git 설치
 
         ```bash
@@ -85,3 +94,63 @@
 8. **[Review Policy]** &rightarrow; **Name** = codecommit-lead-access &rightarrow; **[Create Policy]**
 
 9. ```git push``` 재시도
+
+### SSH
+
+1. AWS Systems Manager Session Manager를 통해서 **dev** 인스턴스로 연결
+    - RSA Key Pair 생성
+
+        ```bash
+        ssh-keygen
+        ```
+
+    - RSA Public Key를 클립보드로 복사
+
+        ```bash
+        cat ~/.ssh/id_rsa.pub
+        ```
+
+2. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Security credentials]** &rightarrow; HTTPS Git credentials for AWS CodeCommit 밑에 있는 **[Upload SSH public key]** 클릭 &rightarrow; 클립보드 내용 붙여넣기 &rightarrow; **[Upload SSH public key]** &rightarrow; SSH key ID를 메모
+
+3. 다시 EC2 세션으로 돌아와서
+
+    - Home Directory로 이동
+
+        ```bash
+        cd
+        ```
+
+    - Git 설치
+
+        ```bash
+        sudo yum install git -y
+        ```
+
+    - Git 유저 설정
+
+        ```bash
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+        ```
+
+    - 로컬 SSH 연결 설정
+
+        ```bash
+        vi ~/.ssh/config
+        ```
+
+        ```text
+        Host git-codecommit.*.amazonaws.com
+        User Your-IAM-SSH-Key-ID-Here
+        IdentityFile ~/.ssh/id_rsa
+        ```
+
+        ```bash
+        chmod 600 ~/.ssh/config
+        ```
+
+    - Clone CodeCommit Repository
+
+        ```bash
+        git clone ssh://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
+        ```

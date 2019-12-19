@@ -402,3 +402,8 @@ CloudWatch Events
 ### 테스트
 
 1. 새로운 Git Branch를 생성 후, 어플리케이션을 1 ~ 30까지의 숫자를 맞추는걸로 수정하고 해당 Branch를 CodeCommit에 Push하고 Pull Request 생성
+
+2. CodeCommit Dashboard에서 방금 생성한 Pull request를 선택하고, Activity나 Changes 탭 밑에서 CodeBuild 테스트 결과 확인
+
+3. CodeBuild 테스트 빌드가 성공하도록 소스코드 수정
+

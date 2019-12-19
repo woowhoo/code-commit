@@ -229,3 +229,176 @@
 
 8. Master branch의 소스코드에 변경사항이 적용 됬는지 확인
 
+## Test Automation
+
+![Test Pipeline](media/test-pipeline.png)
+
+1. 개발자가 Pull Requeust 생성
+
+2. CloudWatch Events에서 Pull Request에 대한 이벤트를 인지하고 Lambda 실행
+
+3. Lambda function을 통해서 CodeBuild에 있는 Test 빌드 실행
+
+4. CloudWatch Events에서 Test 빌드의 상태변화를 인지하고 Lambda 실행
+
+5. Test 빌드의 상태를 Pull Request 댓글에 기록
+
+### CodeBuild
+
+1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CodeBuild를 검색하거나 **[Developer Tools]** 밑에 있는 **[CodeBuild]** 를 선택
+
+2. **[Create build proejct]** &rightarrow; **Project name** = guess-unittest, **Source provider** = AWS CodeCommit, **Repository** = guess, **Reference type** = Branch, **Environment image** = Managed Image, **Operating system** = Amazon Linux 2, **Runtime(s)** = Standard, **Image** = aws/codebuild/amazonlinux2-x86_64-standard:2.0, **Service role** = New service role, **Build specifications** = Insert build commands &rightarrow; **[Switch to editor]** &rightarrow; 아래 커맨드블록을 Build commands에 붙여놓고 **[Create build project]**
+
+    ```yaml
+    version: 0.2
+
+    phases:
+    install:
+        runtime-versions:
+        python: 3.8
+    build:
+        commands:
+        - cat main.py
+        - python3 -m unittest
+    ```
+
+### Lambda
+
+1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
+
+2. Lambda Dashboard에서  **[Create function]** 클릭후,
+  **Function name** = run_testbuild,
+  **Runtime** = Python 3.8,
+  **[Create function]** 클릭
+
+3. 좌측 하단에 있는 **[Execution role]** 에서 **View the run_testbuild-role-xxxx** on the IAM console 를 선택
+
+4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
+**Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow;  **[Add]** 
+
+5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-run-codebuild &rightarrow; **[Create Policy]**
+
+6. 아래 코드블록을 Lambda에 복사 후, **[Save]** 클릭
+
+    ```python
+    import json
+    import boto3
+
+    def lambda_handler(event, context):
+
+        codebuild = boto3.client('codebuild')
+        response = codebuild.start_build(
+            projectName = 'guess-unittest',
+            sourceVersion= event['detail']['sourceCommit'],
+            environmentVariablesOverride=[
+                {
+                    'name': 'pullRequestId',
+                    'value': event['detail']['pullRequestId'],
+                    'type': 'PLAINTEXT'
+                },
+                {
+                    'name': 'repositoryName',
+                    'value': 'guess',
+                    'type': 'PLAINTEXT'
+                },
+                {
+                    'name': 'destinationCommit',
+                    'value': event['detail']['destinationCommit'],
+                    'type': 'PLAINTEXT'
+                }
+            ]
+        )
+    ```
+
+CloudWatch Events
+
+1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CloudWatch를 검색하거나 **[Management & Governance]** 밑에 있는 **[CloudWatch]** 를 선택
+
+2. CloudWatch Dashboard에서 **[Events]** 섹션 아래에 있는 **[Rules]** &rightarrow; **[Create rule]**
+
+3. 왼쪽 Event Source에서 :white_check_mark: Event Pattern 선택 , **Service Name** = CodeCommit, **Event Type** = CodeCommit Pull Request State Change, :white_check_mark: Specific resource(s) by ARN = CodeCommit Repository ARN 입력
+
+4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = run_testbuild &rightarrow; **[Configure details]** 
+
+5. **Name** = pull_request_made, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
+
+Lambda
+
+1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
+
+2. Lambda Dashboard에서  **[Create function]** 클릭후,
+  **Function name** = post_test_result,
+  **Runtime** = Python 3.8,
+  **[Create function]** 클릭
+
+3. 좌측 하단에 있는 **[Execution role]** 에서 **View the post_test_result-role-xxxx** on the IAM console 를 선택
+
+4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
+**Service** = CodeCommit, **Actions** = PostCommentForPullRequest, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow;  **[Add]** 
+
+5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-post-comment-on-pr &rightarrow; **[Create Policy]**
+
+6. 아래 코드블록을 Lambda에 복사 후, **[Save]** 클릭
+
+    ```python
+    import json
+    import boto3
+    import re
+
+    def lambda_handler(event, context):
+        envs = event['detail']['additional-information']['environment']['environment-variables']
+        repositoryName = [var['value'] for var in envs if var['name'] == 'repositoryName'][0]
+        pullRequestId = [var['value'] for var in envs if var['name'] == 'pullRequestId'][0]
+        destinationCommit = [var['value'] for var in envs if var['name'] == 'destinationCommit'][0]
+        buildStatus = event['detail']['build-status']
+        buildArn = event['detail']['build-id']
+        buildId = re.findall(r'(?<=\/)(.*)', buildArn)[0]
+        sourceVersion = envs = event['detail']['additional-information']['source-version']
+
+        codecommit = boto3.client('codecommit')
+        response = codecommit.post_comment_for_pull_request(
+            pullRequestId = pullRequestId,
+            repositoryName = repositoryName,
+            content = f'[BUILD](https://ap-northeast-2.console.aws.amazon.com/codesuite/codebuild/projects/guess-unittest/build/{buildId}): {buildStatus}',
+            afterCommitId = sourceVersion,
+            beforeCommitId = destinationCommit
+        )
+    ```
+
+CloudWatch Events
+
+1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CloudWatch를 검색하거나 **[Management & Governance]** 밑에 있는 **[CloudWatch]** 를 선택
+
+2. CloudWatch Dashboard에서 **[Events]** 섹션 아래에 있는 **[Rules]** &rightarrow; **[Create rule]**
+
+3. 왼쪽 Event Source에서 :white_check_mark: Event Pattern 선택 후 Dropdown 리스트에서 **Custom event pattern** 선택 후 아래 블록을 붙여넣기
+
+    ```json
+    {
+        "source": [
+            "aws.codebuild"
+        ],
+        "detail-type": [
+            "CodeBuild Build State Change"
+        ],
+        "detail": {
+            "build-status": [
+                "IN_PROGRESS",
+                "SUCCEEDED",
+                "FAILED",
+                "STOPPED"
+            ],
+            "project-name": [
+                "guess-unittest"
+            ]
+        }
+    }
+    ```
+
+4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = post_test_result &rightarrow; **[Configure details]** 
+
+5. **Name** = test_build_run, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
+
+### 테스트
+
+1. 새로운 Git Branch를 생성 후, 어플리케이션을 1 ~ 30까지의 숫자를 맞추는걸로 수정하고 해당 Branch를 CodeCommit에 Push하고 Pull Request 생성

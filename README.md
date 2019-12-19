@@ -154,3 +154,78 @@
         ```bash
         git clone ssh://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
         ```
+
+4. 어플리케이션을 1 ~ 20까지의 숫자를 맞추는걸로 수정하고 Git Repository에 변경사항 반영
+
+## Branching
+
+1. 다시 EC2 세션으로 돌아와서 Git Branch 생성 후 Origin으로 Push
+
+    ```bash
+    git checkout -b feature-max20
+    git push -u origin feature-max20
+    ```
+
+2. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
+
+3. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]** 
+
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Deny",
+                "Action": [
+                    "codecommit:GitPush",
+                    "codecommit:DeleteBranch",
+                    "codecommit:PutFile",
+                    "codecommit:MergePullRequestByFastForward"
+                ],
+                "Resource": "arn:aws:codecommit:ap-northeast-2:<ACCOUNT_NUMBER>:guess",
+                "Condition": {
+                    "StringEqualsIfExists": {
+                        "codecommit:References": [
+                            "refs/heads/master"
+                        ]
+                    },
+                    "Null": {
+                        "codecommit:References": false
+                    }
+                }
+            }
+        ]
+    }
+    ```
+
+4. **Name** = DenyChangesToMaster &rightarrow; **[Create policy]**
+
+5. 다시 EC2 세션으로 돌아와서 Git Branch를 Origin으로 Push 재시도
+
+    ```bash
+    git push -u origin feature-max20
+    ```
+
+## Pull Request & Merging branch
+
+1. `dev` IAM user로 AWS Management Console 로그인
+
+    ```text
+    IAM user name: dev
+    Password: asdf1234
+    ```
+
+2. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CodeCommit을 검색하거나 **[Developer Tools]** 밑에 있는 **[CodeCommit]** 를 선택
+
+3. `guess` Repository를 선택 &rightarrow; 왼쪽 패널에서 **[Branches]** &rightarrow; **[Create pull request]** 클릭 &rightarrow; **Destination** = master, **Source** = feature-max20 &rightarrow; **[Compare]**
+
+4. **Title** = NEW-01 최댓값 변경, **Description** = 사용자 XXX의 요청으로 최댓값을 20으로 변경 &rightarrow; **[Create pull request]**
+
+5. `lead` IAM user로 AWS Management Console 로그인하고 AWSCodeCommitPowerUser 권한 부여
+
+6. CodeCommit Dashboard에서 Pull requests 섹션으로 이동
+
+7. **NEW-01 최댓값 변경** Pull request를 선택 &rightarrow; **[Approve]** &rightarrow; **[Merge]** &rightarrow; **[Merge pull request]**
+
+8. Master branch의 소스코드에 변경사항이 적용 됬는지 확인
+

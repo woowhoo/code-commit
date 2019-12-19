@@ -258,7 +258,6 @@
         python: 3.8
     build:
         commands:
-        - cat main.py
         - python3 -m unittest
     ```
 
@@ -406,4 +405,3 @@ CloudWatch Events
 2. CodeCommit Dashboard에서 방금 생성한 Pull request를 선택하고, Activity나 Changes 탭 밑에서 CodeBuild 테스트 결과 확인
 
 3. CodeBuild 테스트 빌드가 성공하도록 소스코드 수정
-

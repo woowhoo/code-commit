@@ -2,6 +2,16 @@
 
 완전 관리형 형상관리 또는 버전관리 서비스로 고가용성, 확장성 및 안정성을 내재한 Git Repository를 제공합니다. 모든 소스코드는 암호화되어 전송 및 저장이 되고 Repository 크기는 무한대로 확장이 가능하며 어떤한 파일도 저장이 가능합니다. 다른 AWS 서비스들과 (AWS CodeBuild, CodeDeploy, CodePipeline, etc) 연계를 통해서 보다 나은 CI/CD 파이프라인을 구축할수 있습니다.
 
+## Lab Overview
+
+1. Git 101 - 기본적인 Git 환경 구성 및 Commands 소개
+
+2. AWs CodeCommit 연동 방식 실습 (HTTP, SSH)
+
+3. Git 201 - Branching, Merging, Pull Request
+
+4. CloudWatch Events, Lambda, CodeBuild로 테스트 자동화 구성
+
 ## 시작하기전에
 
 1. 본 Hands-on lab은 AWS Seoul region 기준으로 작성되었습니다. Region을 Seoul (ap-northeast-2)로 변경 후 진행 부탁드립니다.

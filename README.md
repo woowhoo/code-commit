@@ -74,7 +74,7 @@
     - Clone 해당 Github Repository
 
         ```bash
-        git clone https://github.com/woowhoo/code-commit.git
+        git clone https://github.com/fitcloud/code-commit.git
         ```
 
     - 소스코드 복사

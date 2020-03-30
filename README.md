@@ -178,7 +178,7 @@
 
 2. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
 
-3. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]** 
+3. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]**
 
     ```json
     {
@@ -283,7 +283,7 @@
 3. 좌측 하단에 있는 **[Execution role]** 에서 **View the run_testbuild-role-xxxx** on the IAM console 를 선택
 
 4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
-**Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow;  **[Add]** 
+**Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow;  **[Add]**
 
 5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-run-codebuild &rightarrow; **[Create Policy]**
 
@@ -327,7 +327,7 @@ CloudWatch Events
 
 3. 왼쪽 Event Source에서 :white_check_mark: Event Pattern 선택 , **Service Name** = CodeCommit, **Event Type** = CodeCommit Pull Request State Change, :white_check_mark: Specific resource(s) by ARN = CodeCommit Repository ARN 입력
 
-4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = run_testbuild &rightarrow; **[Configure details]** 
+4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = run_testbuild &rightarrow; **[Configure details]**
 
 5. **Name** = pull_request_made, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
 
@@ -343,7 +343,7 @@ Lambda
 3. 좌측 하단에 있는 **[Execution role]** 에서 **View the post_test_result-role-xxxx** on the IAM console 를 선택
 
 4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
-**Service** = CodeCommit, **Actions** = PostCommentForPullRequest, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow;  **[Add]** 
+**Service** = CodeCommit, **Actions** = PostCommentForPullRequest, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow;  **[Add]**
 
 5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-post-comment-on-pr &rightarrow; **[Create Policy]**
 
@@ -404,7 +404,7 @@ CloudWatch Events
     }
     ```
 
-4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = post_test_result &rightarrow; **[Configure details]** 
+4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = post_test_result &rightarrow; **[Configure details]**
 
 5. **Name** = test_build_run, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
 

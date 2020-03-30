@@ -263,12 +263,12 @@
     version: 0.2
 
     phases:
-        install:
-            runtime-versions:
-            python: 3.8
-        build:
-            commands:
-            - python3 -m unittest
+      install:
+        runtime-versions:
+          python: 3.8
+      build:
+        commands:
+          - python3 -m unittest
     ```
 
 ### Lambda

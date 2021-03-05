@@ -231,7 +231,7 @@ Resources:
     Properties: 
       UserName: dev
       LoginProfile:
-        Password: asdf1234
+        Password: Asdf!234
         PasswordResetRequired: False
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly
@@ -241,7 +241,7 @@ Resources:
     Properties: 
       UserName: lead
       LoginProfile:
-        Password: asdf1234
+        Password: Asdf!234
         PasswordResetRequired: False
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly

@@ -26,7 +26,7 @@
 
     ```text
     IAM user name: lead
-    Password: asdf1234
+    Password: Asdf!234
     ```
 
 2. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 IAM를 검색하거나 **[Security, Identity, & Compliance]** 바로 밑에 있는 **[IAM]** 를 선택

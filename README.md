@@ -24,14 +24,14 @@
 
 1. CloudFormation으로 생성된 IAM user로 AWS Management Console 로그인
 
-    ```text
-    IAM user name: lead
-    Password: Asdf!234
-    ```
+   ```text
+   IAM user name: lead
+   Password: Asdf!234
+   ```
 
 2. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 IAM를 검색하거나 **[Security, Identity, & Compliance]** 바로 밑에 있는 **[IAM]** 를 선택
 
-3. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; lead를 선택 &rightarrow; **[Security credentials]** &rightarrow; HTTPS Git credentials for AWS CodeCommit 밑에 있는 **[Generate credentials]** 를 클릭 후 User name과 Password를 메모
+3. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; lead를 선택 &rightarrow; **[Security credentials]** &rightarrow; HTTPS Git credentials for AWS CodeCommit 밑에 있는 **[Generate credentials]** 를 클릭 후 User name과 Password를 메모
 
 4. AWS Management Console 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 ssm를 검색하고 **[Systems Manager]** 를 선택
 
@@ -39,131 +39,132 @@
 
 6. **[Start Session]** &rightarrow; Instance Name: **lead** 선택 &rightarrow; **[Start Session]** 클릭
 
-    - Home Directory로 이동
+   - Home Directory로 이동
 
-        ```bash
-        cd
-        ```
+     ```bash
+     cd
+     ```
 
-    - Git 설치
+   - Git 설치
 
-        ```bash
-        sudo yum install git -y
-        ```
+     ```bash
+     sudo yum install git -y
+     ```
 
-    - Git 유저 설정
+   - Git 유저 설정
 
-        ```bash
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        ```
+     ```bash
+     git config --global user.email "you@example.com"
+     git config --global user.name "Your Name"
+     ```
 
-    - Clone CodeCommit Repository
+   - Clone CodeCommit Repository
 
-        ```bash
-        git clone https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
-        ```
+     ```bash
+     git clone https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
+     ```
 
-    - 위에서 만든 Git credentials 입력
+   - 위에서 만든 Git credentials 입력
 
-        ```bash
-        Username for 'https://git-codecommit.ap-northeast-2.amazonaws.com':
-        Password for 'https://lead-at-xxxxxxxxx@git-codecommit.ap-northeast-2.amazonaws.com':
-        ```
+     ```bash
+     Username for 'https://git-codecommit.ap-northeast-2.amazonaws.com':
+     Password for 'https://lead-at-xxxxxxxxx@git-codecommit.ap-northeast-2.amazonaws.com':
+     ```
 
-    - Clone 해당 Github Repository
+   - Clone 해당 Github Repository
 
-        ```bash
-        git clone https://github.com/fitcloud/code-commit.git
-        ```
+     ```bash
+     git clone https://github.com/fitcloud/code-commit.git
+     ```
 
-    - 소스코드 복사
+   - 소스코드 복사
 
-        ```bash
-        cp code-commit/*.py guess/
-        ```
+     ```bash
+     cp code-commit/*.py guess/
+     ```
 
-    - Git credentials 저장을 원할경우 (Optional)
+   - Git credentials 저장을 원할경우 (Optional)
 
-        ```bash
-        git config credential.helper store
-        ```
+     ```bash
+     git config credential.helper store
+     ```
 
-    - CodeCommit Repository로 소스코드를 push
+   - CodeCommit Repository로 소스코드를 push
 
-        ```bash
-        cd guess
-        git add main.py test.py
-        git commit -m "initial commit"
-        git push
-        ```
+     ```bash
+     cd guess
+     git add main.py test.py
+     git commit -m "initial commit"
+     git push
+     ```
 
-7. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; lead를 선택 &rightarrow; **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
-**Service** = CodeCommit, **Actions** = GitPush, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow;  **[Add]**
+7. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; lead를 선택 &rightarrow; **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
+   **Service** = CodeCommit, **Actions** = GitPush, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow; **[Add]**
 
 8. **[Review Policy]** &rightarrow; **Name** = codecommit-lead-access &rightarrow; **[Create Policy]**
 
-9. ```git push``` 재시도
+9. `git push` 재시도
 
 ### SSH
 
 1. AWS Systems Manager Session Manager를 통해서 **dev** 인스턴스로 연결
-    - RSA Key Pair 생성
 
-        ```bash
-        ssh-keygen
-        ```
+   - RSA Key Pair 생성
 
-    - RSA Public Key를 클립보드로 복사
+     ```bash
+     ssh-keygen
+     ```
 
-        ```bash
-        cat ~/.ssh/id_rsa.pub
-        ```
+   - RSA Public Key를 클립보드로 복사
 
-2. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Security credentials]** &rightarrow; HTTPS Git credentials for AWS CodeCommit 밑에 있는 **[Upload SSH public key]** 클릭 &rightarrow; 클립보드 내용 붙여넣기 &rightarrow; **[Upload SSH public key]** &rightarrow; SSH key ID를 메모
+     ```bash
+     cat ~/.ssh/id_rsa.pub
+     ```
+
+2. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Security credentials]** &rightarrow; HTTPS Git credentials for AWS CodeCommit 밑에 있는 **[Upload SSH public key]** 클릭 &rightarrow; 클립보드 내용 붙여넣기 &rightarrow; **[Upload SSH public key]** &rightarrow; SSH key ID를 메모
 
 3. 다시 EC2 세션으로 돌아와서
 
-    - Home Directory로 이동
+   - Home Directory로 이동
 
-        ```bash
-        cd
-        ```
+     ```bash
+     cd
+     ```
 
-    - Git 설치
+   - Git 설치
 
-        ```bash
-        sudo yum install git -y
-        ```
+     ```bash
+     sudo yum install git -y
+     ```
 
-    - Git 유저 설정
+   - Git 유저 설정
 
-        ```bash
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        ```
+     ```bash
+     git config --global user.email "you@example.com"
+     git config --global user.name "Your Name"
+     ```
 
-    - 로컬 SSH 연결 설정
+   - 로컬 SSH 연결 설정
 
-        ```bash
-        vi ~/.ssh/config
-        ```
+     ```bash
+     vi ~/.ssh/config
+     ```
 
-        ```text
-        Host git-codecommit.*.amazonaws.com
-        User Your-IAM-SSH-Key-ID-Here
-        IdentityFile ~/.ssh/id_rsa
-        ```
+     ```text
+     Host git-codecommit.*.amazonaws.com
+     User Your-IAM-SSH-Key-ID-Here
+     IdentityFile ~/.ssh/id_rsa
+     ```
 
-        ```bash
-        chmod 600 ~/.ssh/config
-        ```
+     ```bash
+     chmod 600 ~/.ssh/config
+     ```
 
-    - Clone CodeCommit Repository
+   - Clone CodeCommit Repository
 
-        ```bash
-        git clone ssh://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
-        ```
+     ```bash
+     git clone ssh://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/guess
+     ```
 
 4. 어플리케이션을 1 ~ 20까지의 숫자를 맞추는걸로 수정하고 Git Repository에 변경사항 반영
 
@@ -171,59 +172,57 @@
 
 1. 다시 EC2 세션으로 돌아와서 Git Branch 생성 후 Origin으로 Push
 
-    ```bash
-    git checkout -b feature-max20
-    git push -u origin feature-max20
-    ```
+   ```bash
+   git checkout -b feature-max20
+   git push -u origin feature-max20
+   ```
 
-2. IAM Dashboard에서  **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
+2. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
 
 3. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]**
 
-    ```json
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Deny",
-                "Action": [
-                    "codecommit:GitPush",
-                    "codecommit:DeleteBranch",
-                    "codecommit:PutFile",
-                    "codecommit:MergePullRequestByFastForward"
-                ],
-                "Resource": "arn:aws:codecommit:ap-northeast-2:<ACCOUNT_NUMBER>:guess",
-                "Condition": {
-                    "StringEqualsIfExists": {
-                        "codecommit:References": [
-                            "refs/heads/master"
-                        ]
-                    },
-                    "Null": {
-                        "codecommit:References": false
-                    }
-                }
-            }
-        ]
-    }
-    ```
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Deny",
+         "Action": [
+           "codecommit:GitPush",
+           "codecommit:DeleteBranch",
+           "codecommit:PutFile",
+           "codecommit:MergePullRequestByFastForward"
+         ],
+         "Resource": "arn:aws:codecommit:ap-northeast-2:<ACCOUNT_NUMBER>:guess",
+         "Condition": {
+           "StringEqualsIfExists": {
+             "codecommit:References": ["refs/heads/master"]
+           },
+           "Null": {
+             "codecommit:References": false
+           }
+         }
+       }
+     ]
+   }
+   ```
 
 4. **Name** = DenyChangesToMaster &rightarrow; **[Create policy]**
 
 5. 다시 EC2 세션으로 돌아와서 Git Branch를 Origin으로 Push 재시도
 
-    ```bash
-    git push -u origin feature-max20
-    ```
+   ```bash
+   git push -u origin feature-max20
+   ```
 
 ## Pull Request & Merging branch
 
 1. `dev` IAM user로 AWS Management Console 로그인
 
-    ```text
-    IAM user name: dev
-    Password: asdf1234
-    ```
+   ```text
+   IAM user name: dev
+   Password: asdf1234
+   ```
 
 2. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CodeCommit을 검색하거나 **[Developer Tools]** 밑에 있는 **[CodeCommit]** 를 선택
 
@@ -259,65 +258,65 @@
 
 2. **[Create build proejct]** &rightarrow; **Project name** = guess-unittest, **Source provider** = AWS CodeCommit, **Repository** = guess, **Reference type** = Branch, **Environment image** = Managed Image, **Operating system** = Amazon Linux 2, **Runtime(s)** = Standard, **Image** = aws/codebuild/amazonlinux2-x86_64-standard:2.0, **Service role** = New service role, **Build specifications** = Insert build commands &rightarrow; **[Switch to editor]** &rightarrow; 아래 커맨드블록을 Build commands에 붙여놓고 **[Create build project]**
 
-    ```yaml
-    version: 0.2
+   ```yaml
+   version: 0.2
 
-    phases:
-      install:
-        runtime-versions:
-          python: 3.8
-      build:
-        commands:
-          - python3 -m unittest
-    ```
+   phases:
+     install:
+       runtime-versions:
+         python: 3.8
+     build:
+       commands:
+         - python3 -m unittest
+   ```
 
 ### Lambda
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
 
-2. Lambda Dashboard에서  **[Create function]** 클릭후,
-  **Function name** = run_testbuild,
-  **Runtime** = Python 3.8,
-  **[Create function]** 클릭
+2. Lambda Dashboard에서 **[Create function]** 클릭후,
+   **Function name** = run_testbuild,
+   **Runtime** = Python 3.8,
+   **[Create function]** 클릭
 
 3. 좌측 하단에 있는 **[Execution role]** 에서 **View the run_testbuild-role-xxxx** on the IAM console 를 선택
 
 4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
-**Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow;  **[Add]**
+   **Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow; **[Add]**
 
 5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-run-codebuild &rightarrow; **[Create Policy]**
 
 6. 아래 코드블록을 Lambda에 복사 후, **[Save]** 클릭
 
-    ```python
-    import json
-    import boto3
+   ```python
+   import json
+   import boto3
 
-    def lambda_handler(event, context):
+   def lambda_handler(event, context):
 
-        codebuild = boto3.client('codebuild')
-        response = codebuild.start_build(
-            projectName = 'guess-unittest',
-            sourceVersion= event['detail']['sourceCommit'],
-            environmentVariablesOverride=[
-                {
-                    'name': 'pullRequestId',
-                    'value': event['detail']['pullRequestId'],
-                    'type': 'PLAINTEXT'
-                },
-                {
-                    'name': 'repositoryName',
-                    'value': 'guess',
-                    'type': 'PLAINTEXT'
-                },
-                {
-                    'name': 'destinationCommit',
-                    'value': event['detail']['destinationCommit'],
-                    'type': 'PLAINTEXT'
-                }
-            ]
-        )
-    ```
+       codebuild = boto3.client('codebuild')
+       response = codebuild.start_build(
+           projectName = 'guess-unittest',
+           sourceVersion= event['detail']['sourceCommit'],
+           environmentVariablesOverride=[
+               {
+                   'name': 'pullRequestId',
+                   'value': event['detail']['pullRequestId'],
+                   'type': 'PLAINTEXT'
+               },
+               {
+                   'name': 'repositoryName',
+                   'value': 'guess',
+                   'type': 'PLAINTEXT'
+               },
+               {
+                   'name': 'destinationCommit',
+                   'value': event['detail']['destinationCommit'],
+                   'type': 'PLAINTEXT'
+               }
+           ]
+       )
+   ```
 
 CloudWatch Events
 
@@ -335,44 +334,44 @@ Lambda
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
 
-2. Lambda Dashboard에서  **[Create function]** 클릭후,
-  **Function name** = post_test_result,
-  **Runtime** = Python 3.8,
-  **[Create function]** 클릭
+2. Lambda Dashboard에서 **[Create function]** 클릭후,
+   **Function name** = post_test_result,
+   **Runtime** = Python 3.8,
+   **[Create function]** 클릭
 
 3. 좌측 하단에 있는 **[Execution role]** 에서 **View the post_test_result-role-xxxx** on the IAM console 를 선택
 
 4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
-**Service** = CodeCommit, **Actions** = PostCommentForPullRequest, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow;  **[Add]**
+   **Service** = CodeCommit, **Actions** = PostCommentForPullRequest, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Repository name** = guess &rightarrow; **[Add]**
 
 5. **[Review Policy]** &rightarrow; **Name** = allow-lambda-post-comment-on-pr &rightarrow; **[Create Policy]**
 
 6. 아래 코드블록을 Lambda에 복사 후, **[Save]** 클릭
 
-    ```python
-    import json
-    import boto3
-    import re
+   ```python
+   import json
+   import boto3
+   import re
 
-    def lambda_handler(event, context):
-        envs = event['detail']['additional-information']['environment']['environment-variables']
-        repositoryName = [var['value'] for var in envs if var['name'] == 'repositoryName'][0]
-        pullRequestId = [var['value'] for var in envs if var['name'] == 'pullRequestId'][0]
-        destinationCommit = [var['value'] for var in envs if var['name'] == 'destinationCommit'][0]
-        buildStatus = event['detail']['build-status']
-        buildArn = event['detail']['build-id']
-        buildId = re.findall(r'(?<=\/)(.*)', buildArn)[0]
-        sourceVersion = envs = event['detail']['additional-information']['source-version']
+   def lambda_handler(event, context):
+       envs = event['detail']['additional-information']['environment']['environment-variables']
+       repositoryName = [var['value'] for var in envs if var['name'] == 'repositoryName'][0]
+       pullRequestId = [var['value'] for var in envs if var['name'] == 'pullRequestId'][0]
+       destinationCommit = [var['value'] for var in envs if var['name'] == 'destinationCommit'][0]
+       buildStatus = event['detail']['build-status']
+       buildArn = event['detail']['build-id']
+       buildId = re.findall(r'(?<=\/)(.*)', buildArn)[0]
+       sourceVersion = envs = event['detail']['additional-information']['source-version']
 
-        codecommit = boto3.client('codecommit')
-        response = codecommit.post_comment_for_pull_request(
-            pullRequestId = pullRequestId,
-            repositoryName = repositoryName,
-            content = f'[BUILD](https://ap-northeast-2.console.aws.amazon.com/codesuite/codebuild/projects/guess-unittest/build/{buildId}): {buildStatus}',
-            afterCommitId = sourceVersion,
-            beforeCommitId = destinationCommit
-        )
-    ```
+       codecommit = boto3.client('codecommit')
+       response = codecommit.post_comment_for_pull_request(
+           pullRequestId = pullRequestId,
+           repositoryName = repositoryName,
+           content = f'[BUILD](https://ap-northeast-2.console.aws.amazon.com/codesuite/codebuild/projects/guess-unittest/build/{buildId}): {buildStatus}',
+           afterCommitId = sourceVersion,
+           beforeCommitId = destinationCommit
+       )
+   ```
 
 CloudWatch Events
 
@@ -382,27 +381,16 @@ CloudWatch Events
 
 3. 왼쪽 Event Source에서 :white_check_mark: Event Pattern 선택 후 Dropdown 리스트에서 **Custom event pattern** 선택 후 아래 블록을 붙여넣기
 
-    ```json
-    {
-        "source": [
-            "aws.codebuild"
-        ],
-        "detail-type": [
-            "CodeBuild Build State Change"
-        ],
-        "detail": {
-            "build-status": [
-                "IN_PROGRESS",
-                "SUCCEEDED",
-                "FAILED",
-                "STOPPED"
-            ],
-            "project-name": [
-                "guess-unittest"
-            ]
-        }
-    }
-    ```
+   ```json
+   {
+     "source": ["aws.codebuild"],
+     "detail-type": ["CodeBuild Build State Change"],
+     "detail": {
+       "build-status": ["IN_PROGRESS", "SUCCEEDED", "FAILED", "STOPPED"],
+       "project-name": ["guess-unittest"]
+     }
+   }
+   ```
 
 4. 오른쪽 Targets에서 **[:heavy_plus_sign: Add target]** &rightarrow; **Lambda function** &rightarrow; **Function** = post_test_result &rightarrow; **[Configure details]**
 

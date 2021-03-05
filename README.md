@@ -280,7 +280,7 @@
          - python3 -m unittest
    ```
 
-### Lambda
+### Lambda - CodeBuild 실행
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
 
@@ -328,7 +328,7 @@
        )
    ```
 
-### CloudWatch Events
+### CloudWatch Events - Pull Request 변경 탐지
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CloudWatch를 검색하거나 **[Management & Governance]** 밑에 있는 **[CloudWatch]** 를 선택
 
@@ -340,7 +340,7 @@
 
 5. **Name** = pull_request_made, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
 
-### Lambda
+### Lambda - CodeBuild 결과 전송
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
 
@@ -383,7 +383,7 @@
        )
    ```
 
-CloudWatch Events
+### CloudWatch Events - CodeBuild 상태 탐지
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CloudWatch를 검색하거나 **[Management & Governance]** 밑에 있는 **[CloudWatch]** 를 선택
 

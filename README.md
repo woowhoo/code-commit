@@ -328,7 +328,7 @@
        )
    ```
 
-CloudWatch Events
+### CloudWatch Events
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CloudWatch를 검색하거나 **[Management & Governance]** 밑에 있는 **[CloudWatch]** 를 선택
 
@@ -340,7 +340,7 @@ CloudWatch Events
 
 5. **Name** = pull_request_made, **State** = :white_check_mark: Enabled &rightarrow; **[Create rule]**
 
-Lambda
+### Lambda
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 Lambda를 검색하거나 **[Compute]** 밑에 있는 **[Lambda]** 를 선택
 
@@ -413,3 +413,11 @@ CloudWatch Events
 2. CodeCommit Dashboard에서 방금 생성한 Pull request를 선택하고, Activity나 Changes 탭 밑에서 CodeBuild 테스트 결과 확인
 
 3. CodeBuild 테스트 빌드가 성공하도록 소스코드 수정
+
+## Cleanup
+
+1. IAM 유저에 수동으로 추가된 인라인 정책, AWSCodeCommitPowerUser 정책 및 Git 자격증명 삭제
+2. Lambda 함수 삭제 - post_test_result, run_testbuild
+3. CloudWatch Events 삭제 - pull_request_made, test_build_run
+4. AWS CodeBuild 프로젝트 삭제 - guess-unittest
+5. CloudFormation 스택 삭제

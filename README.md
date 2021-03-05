@@ -77,6 +77,12 @@
      git clone https://github.com/fitcloud/code-commit.git
      ```
 
+   - 샘플 애플리케이션 구동
+
+     ```bash
+     python3 main.py
+     ```
+
    - 소스코드 복사
 
      ```bash
@@ -168,18 +174,22 @@
 
 4. 어플리케이션을 1 ~ 20까지의 숫자를 맞추는걸로 수정하고 Git Repository에 변경사항 반영
 
+5. 권한 부족으로 리포지토리에 변경사항을 반영할수 없으므로 다음 단계로 진행
+
 ## Branching
 
-1. 다시 EC2 세션으로 돌아와서 Git Branch 생성 후 Origin으로 Push
+1. Git Branch 생성 후 Origin으로 Push
 
    ```bash
    git checkout -b feature-max20
    git push -u origin feature-max20
    ```
 
-2. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
+2. 권한 부족으로 리포지토리에 변경사항을 반영할수 없으므로 다음 단계로 진행
 
-3. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]**
+3. IAM Dashboard에서 **[Users]** 클릭 &rightarrow; dev를 선택 &rightarrow; **[Permissions]** 섹션 아래 **[Add permissions]** &rightarrow; **[Attach existing policies directly]** &rightarrow; :white_check_mark: AWSCodeCommitPowerUser 선택 &rightarrow; **[Next: Review]** &rightarrow; **[Add permissions]**
+
+4. **[:heavy_plus_sign: Add inline policy]** 클릭 &rightarrow; **JSON** 선택 후 아래 내용 붙여넣고 **[Review policy]**
 
    ```json
    {
@@ -193,7 +203,7 @@
            "codecommit:PutFile",
            "codecommit:MergePullRequestByFastForward"
          ],
-         "Resource": "arn:aws:codecommit:ap-northeast-2:<ACCOUNT_NUMBER>:guess",
+         "Resource": "arn:aws:codecommit:ap-northeast-2:*:guess",
          "Condition": {
            "StringEqualsIfExists": {
              "codecommit:References": ["refs/heads/master"]
@@ -207,9 +217,9 @@
    }
    ```
 
-4. **Name** = DenyChangesToMaster &rightarrow; **[Create policy]**
+5. **Name** = DenyChangesToMaster &rightarrow; **[Create policy]**
 
-5. 다시 EC2 세션으로 돌아와서 Git Branch를 Origin으로 Push 재시도
+6. 다시 EC2 세션으로 돌아와서 Git Branch를 Origin으로 Push 재시도
 
    ```bash
    git push -u origin feature-max20
@@ -221,7 +231,7 @@
 
    ```text
    IAM user name: dev
-   Password: asdf1234
+   Password: Asdf!234
    ```
 
 2. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CodeCommit을 검색하거나 **[Developer Tools]** 밑에 있는 **[CodeCommit]** 를 선택
@@ -256,7 +266,7 @@
 
 1. AWS Management Console에서 좌측 상단에 있는 **[Services]** 를 선택하고 검색창에서 CodeBuild를 검색하거나 **[Developer Tools]** 밑에 있는 **[CodeBuild]** 를 선택
 
-2. **[Create build proejct]** &rightarrow; **Project name** = guess-unittest, **Source provider** = AWS CodeCommit, **Repository** = guess, **Reference type** = Branch, **Environment image** = Managed Image, **Operating system** = Amazon Linux 2, **Runtime(s)** = Standard, **Image** = aws/codebuild/amazonlinux2-x86_64-standard:2.0, **Service role** = New service role, **Build specifications** = Insert build commands &rightarrow; **[Switch to editor]** &rightarrow; 아래 커맨드블록을 Build commands에 붙여놓고 **[Create build project]**
+2. **[Create build proejct]** &rightarrow; **Project name** = guess-unittest, **Source provider** = AWS CodeCommit, **Repository** = guess, **Reference type** = Branch, **Environment image** = Managed Image, **Operating system** = Amazon Linux 2, **Runtime(s)** = Standard, **Image** = aws/codebuild/amazonlinux2-x86_64-standard:3.0, **Service role** = New service role, **Build specifications** = Insert build commands &rightarrow; **[Switch to editor]** &rightarrow; 아래 커맨드블록을 Build commands에 붙여놓고 **[Create build project]**
 
    ```yaml
    version: 0.2
@@ -279,7 +289,7 @@
    **Runtime** = Python 3.8,
    **[Create function]** 클릭
 
-3. 좌측 하단에 있는 **[Execution role]** 에서 **View the run_testbuild-role-xxxx** on the IAM console 를 선택
+3. **[Configuration]** &rightarrow; **[Permission]** &rightarrow; **Execution role** 에서 **run_testbuild-role-xxxx** 를 선택
 
 4. **[Permissions]** 섹션 오른쪽에 있는 **[:heavy_plus_sign: Add inline policy]** 클릭후,
    **Service** = CodeBuild, **Actions** = StartBuild, **Resources** 탭에 있는 **[Add ARN]** 클릭 &rightarrow; **Region** = ap-northeast-2, **Project name** = guess-unittest &rightarrow; **[Add]**
